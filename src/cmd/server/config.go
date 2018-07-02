@@ -3,12 +3,15 @@ package main
 import (
 	"fmt"
 
+	"lib/auth"
+
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"
 )
 
 type config struct {
 	Server server
+	Auth   auth.Config
 }
 
 type server struct {

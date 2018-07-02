@@ -1,12 +1,14 @@
 package api
 
 import (
+	"lib/auth"
+
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 )
 
 type Services struct {
-	Auth authService
+	Auth auth.Service
 }
 
 func Register(r *gin.Engine, services Services) {

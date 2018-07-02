@@ -3,21 +3,16 @@ package api
 import (
 	"net/http"
 
+	"lib/auth"
+
 	"github.com/gin-gonic/gin"
 )
 
-type authService interface {
-	Register(login string, password string, nickname string) (exists bool, token string, err error)
-	Login(login string, password string) (exists bool, token string, err error)
-
-	Logout(token string) (exists bool, err error)
-}
-
-func RegisterHandler(service authService) gin.HandlerFunc {
+func RegisterHandler(service auth.Service) gin.HandlerFunc {
 	type request struct {
 		Login    string `json:"login" binding:"required"`
 		Password string `json:"password" binding:"required"`
-		Nickname string `json:"nickname" binding:"required"`
+		Nickname string `json:"nickname"`
 	}
 
 	type response struct {
@@ -31,13 +26,12 @@ func RegisterHandler(service authService) gin.HandlerFunc {
 			ctx.Error(err)
 			return
 		}
-
-		exists, token, err := service.Register(req.Login, req.Password, req.Nickname)
-		if err != nil {
-			ctx.Error(err)
-			return
+		if req.Nickname == "" {
+			req.Nickname = req.Login
 		}
-		if exists {
+
+		token, err := service.Register(req.Login, req.Password, req.Nickname)
+		if err == auth.ErrUserExists {
 			ctx.Error(validationErrorsList{
 				"login": validationError{
 					Error: "exists",
@@ -46,6 +40,11 @@ func RegisterHandler(service authService) gin.HandlerFunc {
 			})
 			return
 		}
+		if err != nil {
+			ctx.Error(err)
+			return
+		}
+
 		ctx.JSON(http.StatusOK, response{
 			Token: token,
 		})

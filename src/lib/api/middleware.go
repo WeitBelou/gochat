@@ -25,7 +25,7 @@ type validationError struct {
 type validationErrorsList map[string]validationError
 
 func (v validationErrorsList) Error() string {
-	return fmt.Sprintf("validation error: %+v", v)
+	return fmt.Sprintf("validation error: %+v", map[string]validationError(v))
 }
 
 func ErrorMiddleware() gin.HandlerFunc {

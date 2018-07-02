@@ -2,6 +2,13 @@
 	"version": 0,
 	"dependencies": [
 		{
+			"importpath": "cloud.google.com/go/civil",
+			"repository": "https://code.googlesource.com/gocloud",
+			"revision": "45cf3e15d299a55070c9c75f92b61c1d31d1429a",
+			"branch": "master",
+			"path": "/civil"
+		},
+		{
 			"importpath": "github.com/armon/consul-api",
 			"repository": "https://github.com/armon/consul-api",
 			"revision": "eb2c6b5be1b66bab83016e0b05f01b8d5496ffbd",
@@ -48,6 +55,18 @@
 			"revision": "e214231b295a8ea9479f11b70b35d5acf3556d9b",
 			"branch": "master",
 			"path": "/semver"
+		},
+		{
+			"importpath": "github.com/denisenkom/go-mssqldb",
+			"repository": "https://github.com/denisenkom/go-mssqldb",
+			"revision": "3724b4745ca99cd0374ace516e93c022c00dfda9",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/dgrijalva/jwt-go",
+			"repository": "https://github.com/dgrijalva/jwt-go",
+			"revision": "06ea1031745cb8b3dab3f6a236daf2b0aa468b7e",
+			"branch": "master"
 		},
 		{
 			"importpath": "github.com/dustin/go-broadcast",
@@ -98,6 +117,12 @@
 			"branch": "v9"
 		},
 		{
+			"importpath": "github.com/go-sql-driver/mysql",
+			"repository": "https://github.com/go-sql-driver/mysql",
+			"revision": "749ddf1598b47e3cd909414bda735fe790ef3d30",
+			"branch": "master"
+		},
+		{
 			"importpath": "github.com/golang/protobuf/proto",
 			"repository": "https://github.com/golang/protobuf",
 			"revision": "9eb2c01ac278a5d89ce4b2be68fe4500955d8179",
@@ -131,9 +156,27 @@
 			"branch": "master"
 		},
 		{
+			"importpath": "github.com/jinzhu/gorm",
+			"repository": "https://github.com/jinzhu/gorm",
+			"revision": "0fd395ab37aefd2d50854f0556a4311dccc6f45a",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/jinzhu/inflection",
+			"repository": "https://github.com/jinzhu/inflection",
+			"revision": "04140366298a54a039076d798123ffa108fff46c",
+			"branch": "master"
+		},
+		{
 			"importpath": "github.com/json-iterator/go",
 			"repository": "https://github.com/json-iterator/go",
 			"revision": "ab8a2e0c74be9d3be70b3184d9acc634935ded82",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/lib/pq",
+			"repository": "https://github.com/lib/pq",
+			"revision": "90697d60dd844d5ef6ff15135d0203f65d2f53b8",
 			"branch": "master"
 		},
 		{
@@ -152,6 +195,12 @@
 			"importpath": "github.com/mattn/go-isatty",
 			"repository": "https://github.com/mattn/go-isatty",
 			"revision": "6ca4dbf54d38eea1a992b3c722a76a5d1c4cb25c",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/mattn/go-sqlite3",
+			"repository": "https://github.com/mattn/go-sqlite3",
+			"revision": "3aefd9f0a162514f66d0e4ceda3edc44e66b502e",
 			"branch": "master"
 		},
 		{
@@ -263,11 +312,32 @@
 			"path": "/acme/autocert"
 		},
 		{
+			"importpath": "golang.org/x/crypto/bcrypt",
+			"repository": "https://go.googlesource.com/crypto",
+			"revision": "a49355c7e3f8fe157a85be2f77e6e269a0f89602",
+			"branch": "master",
+			"path": "/bcrypt"
+		},
+		{
+			"importpath": "golang.org/x/crypto/blowfish",
+			"repository": "https://go.googlesource.com/crypto",
+			"revision": "a49355c7e3f8fe157a85be2f77e6e269a0f89602",
+			"branch": "master",
+			"path": "/blowfish"
+		},
+		{
 			"importpath": "golang.org/x/crypto/cast5",
 			"repository": "https://go.googlesource.com/crypto",
 			"revision": "a49355c7e3f8fe157a85be2f77e6e269a0f89602",
 			"branch": "master",
 			"path": "/cast5"
+		},
+		{
+			"importpath": "golang.org/x/crypto/md4",
+			"repository": "https://go.googlesource.com/crypto",
+			"revision": "a49355c7e3f8fe157a85be2f77e6e269a0f89602",
+			"branch": "master",
+			"path": "/md4"
 		},
 		{
 			"importpath": "golang.org/x/crypto/openpgp",

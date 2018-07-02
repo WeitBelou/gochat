@@ -1,5 +1,8 @@
 version: '3.5'
 
+volumes:
+  users_data: {}
+
 services:
   api:
     build: .
@@ -7,3 +10,16 @@ services:
       - "8080:8080"
     volumes:
       - "./gochat.yml:/etc/gochat.yml:ro"
+    depends_on:
+      - users
+  users:
+    image: postgres
+    environment:
+      POSTGRES_DB: users
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      # TODO(i.kosolapov): For debugging purposes
+      - "5467:5432"
+    volumes:
+    - users_data:/var/lib/postgresql/data
