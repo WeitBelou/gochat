@@ -51,14 +51,41 @@ func RegisterHandler(service auth.Service) gin.HandlerFunc {
 	}
 }
 
-func LoginHandler() gin.HandlerFunc {
-	return func(ctx *gin.Context) {
-		panic("not implemented")
+func LoginHandler(service auth.Service) gin.HandlerFunc {
+	type request struct {
+		Login    string `json:"login" binding:"required"`
+		Password string `json:"password" binding:"required"`
 	}
-}
 
-func LogoutHandler() gin.HandlerFunc {
+	type response struct {
+		Token string `json:"token"`
+	}
+
 	return func(ctx *gin.Context) {
-		panic("not implemented")
+		req := &request{}
+		err := ctx.ShouldBindJSON(req)
+		if err != nil {
+			ctx.Error(err)
+			return
+		}
+
+		token, err := service.Login(req.Login, req.Password)
+		if err == auth.ErrBadCredentials {
+			ctx.Error(validationErrorsList{
+				"login": validationError{
+					Error: "bad_credentials",
+					Value: req.Login,
+				},
+			})
+			return
+		}
+		if err != nil {
+			ctx.Error(err)
+			return
+		}
+
+		ctx.JSON(http.StatusOK, response{
+			Token: token,
+		})
 	}
 }

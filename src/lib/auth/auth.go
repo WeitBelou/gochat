@@ -1,6 +1,9 @@
 package auth
 
 import (
+	"log"
+	"time"
+
 	"lib/config"
 
 	"github.com/dgrijalva/jwt-go"
@@ -38,20 +41,16 @@ func New(c Config) (*UsersDB, error) {
 }
 
 func (db *UsersDB) Register(login string, password string, nickname string) (string, error) {
-	passwordHash, err := db.getPasswordHash(password)
-	if err != nil {
-		return "", errors.Wrap(err, "failed to generate password hash")
-	}
 	u := &User{
 		Login:        login,
 		Nickname:     nickname,
-		PasswordHash: passwordHash,
+		PasswordHash: db.getPasswordHash(password),
 	}
 
 	scope := db.conn.First(&User{Login: login})
 	if scope.RecordNotFound() {
 		db.conn.Create(u)
-		if db.conn.Error != nil {
+		if err := db.conn.Error; err != nil {
 			return "", errors.Wrap(err, "failed to create user")
 		}
 	} else {
@@ -68,17 +67,33 @@ func (db *UsersDB) Register(login string, password string, nickname string) (str
 	return token, nil
 }
 
-func (*UsersDB) Login(login string, password string) (string, error) {
-	panic("implement me")
-}
+func (db *UsersDB) Login(login string, password string) (string, error) {
+	u := &User{}
 
-func (*UsersDB) Logout(token string) error {
-	panic("implement me")
+	scope := db.conn.First(u, "login = ?", login)
+	if scope.RecordNotFound() {
+		return "", ErrBadCredentials
+	} else if err := scope.Error; err != nil {
+		return "", errors.Wrap(err, "failed to check if user exists")
+	}
+
+	passwordOk := db.checkPasswordHash(u.PasswordHash, password)
+	if !passwordOk {
+		return "", ErrBadCredentials
+	}
+
+	token, err := db.getToken(u)
+	if err != nil {
+		return "", errors.Wrap(err, "failed to return token on login")
+	}
+	return token, nil
 }
 
 func (db *UsersDB) getToken(u *User) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
-		Subject: u.Login,
+		Subject:   u.Login,
+		IssuedAt:  time.Now().Unix(),
+		ExpiresAt: time.Now().Add(time.Hour * 2).Unix(),
 	})
 	tokenString, err := token.SignedString([]byte(db.cfg.Secret))
 	if err != nil {
@@ -87,10 +102,18 @@ func (db *UsersDB) getToken(u *User) (string, error) {
 	return tokenString, nil
 }
 
-func (db *UsersDB) getPasswordHash(password string) (string, error) {
+func (db *UsersDB) getPasswordHash(password string) string {
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
-		return "", errors.Wrap(err, "failed to generate password hash")
+		log.Panicf("failed to generate password hash: %+v", err)
 	}
-	return string(hash), nil
+	return string(hash)
+}
+
+func (db *UsersDB) checkPasswordHash(hashedPassword, password string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+	if err != nil {
+		return false
+	}
+	return true
 }

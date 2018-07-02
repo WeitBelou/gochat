@@ -25,8 +25,7 @@ func Register(r *gin.Engine, services Services) {
 	authGroup := v1.Group("/auth")
 	{
 		authGroup.POST("/register", RegisterHandler(services.Auth))
-		authGroup.POST("/login", LoginHandler())
-		authGroup.POST("/logout", LogoutHandler())
+		authGroup.POST("/login", LoginHandler(services.Auth))
 	}
 
 	profileGroup := v1.Group("/profile")

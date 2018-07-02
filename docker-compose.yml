@@ -1,8 +1,5 @@
 version: '3.5'
 
-volumes:
-  users_data: {}
-
 services:
   api:
     build: .
@@ -21,5 +18,3 @@ services:
     ports:
       # TODO(i.kosolapov): For debugging purposes
       - "5467:5432"
-    volumes:
-    - users_data:/var/lib/postgresql/data
