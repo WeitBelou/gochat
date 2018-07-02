@@ -1,19 +1,15 @@
-FROM golang:1.10-alpine3.7 as builder
+FROM golang:1.10 as builder
 
-RUN apk add --no-cache git
 RUN go get -u -v golang.org/x/vgo
 
 RUN mkdir /app
 WORKDIR /app
 
-ADD cmd cmd
 ADD go.mod go.mod
 ADD go.sum go.sum
+ADD cmd cmd
+ADD vendor vendor
 
-RUN vgo build -tags=jsoniter ./cmd/...
+RUN vgo build -tags=jsoniter -o server ./cmd/server
 
-FROM alpine:3.7
-RUN mkdir /app
-WORKDIR /app
-COPY --from=builder /app/server .
 CMD ["./server"]

@@ -1,0 +1,81 @@
+# github.com/BurntSushi/toml v0.3.0
+github.com/BurntSushi/toml
+# github.com/davecgh/go-spew v1.1.0
+github.com/davecgh/go-spew/spew
+github.com/davecgh/go-spew/spew/testdata
+# github.com/fsnotify/fsnotify v1.4.7
+github.com/fsnotify/fsnotify
+# github.com/gin-gonic/gin v1.1.4
+github.com/gin-gonic/gin
+github.com/gin-gonic/gin/binding
+github.com/gin-gonic/gin/binding/example
+github.com/gin-gonic/gin/render
+# github.com/golang/protobuf v1.1.0
+github.com/golang/protobuf/proto
+github.com/golang/protobuf/proto/proto3_proto
+github.com/golang/protobuf/proto/test_proto
+github.com/golang/protobuf/protoc-gen-go/descriptor
+github.com/golang/protobuf/ptypes
+github.com/golang/protobuf/ptypes/any
+github.com/golang/protobuf/ptypes/duration
+github.com/golang/protobuf/ptypes/timestamp
+# github.com/hashicorp/hcl v0.0.0-20180404174102-ef8a98b0bbce
+github.com/hashicorp/hcl
+github.com/hashicorp/hcl/hcl/ast
+github.com/hashicorp/hcl/hcl/parser
+github.com/hashicorp/hcl/hcl/printer
+github.com/hashicorp/hcl/hcl/scanner
+github.com/hashicorp/hcl/hcl/strconv
+github.com/hashicorp/hcl/hcl/token
+github.com/hashicorp/hcl/json/parser
+github.com/hashicorp/hcl/json/scanner
+github.com/hashicorp/hcl/json/token
+# github.com/magiconair/properties v1.8.0
+github.com/magiconair/properties
+github.com/magiconair/properties/assert
+# github.com/manucorporat/sse v0.0.0-20160126180136-ee05b128a739
+github.com/manucorporat/sse
+# github.com/mattn/go-isatty v0.0.3
+github.com/mattn/go-isatty
+# github.com/mitchellh/mapstructure v0.0.0-20180511142126-bb74f1db0675
+github.com/mitchellh/mapstructure
+# github.com/pelletier/go-toml v1.2.0
+github.com/pelletier/go-toml
+# github.com/pkg/errors v0.8.0
+github.com/pkg/errors
+# github.com/pmezard/go-difflib v1.0.0
+github.com/pmezard/go-difflib/difflib
+# github.com/spf13/afero v1.1.1
+github.com/spf13/afero
+github.com/spf13/afero/mem
+# github.com/spf13/cast v1.2.0
+github.com/spf13/cast
+# github.com/spf13/jwalterweatherman v0.0.0-20180109140146-7c0cea34c8ec
+github.com/spf13/jwalterweatherman
+# github.com/spf13/pflag v1.0.1
+github.com/spf13/pflag
+# github.com/spf13/viper v1.0.2
+github.com/spf13/viper
+# github.com/stretchr/testify v1.2.2
+github.com/stretchr/testify/assert
+github.com/stretchr/testify/require
+# golang.org/x/net v0.0.0-20180629035331-4cb1c02c05b0
+golang.org/x/net/context
+# golang.org/x/sync v0.0.0-20180314180146-1d60e4601c6f
+golang.org/x/sync/errgroup
+# golang.org/x/sys v0.0.0-20180627142611-7138fd3d9dc8
+golang.org/x/sys/unix
+# golang.org/x/text v0.3.0
+golang.org/x/text/internal/gen
+golang.org/x/text/internal/testtext
+golang.org/x/text/transform
+golang.org/x/text/unicode/cldr
+golang.org/x/text/unicode/norm
+# gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405
+gopkg.in/check.v1
+# gopkg.in/go-playground/assert.v1 v1.2.1
+gopkg.in/go-playground/assert.v1
+# gopkg.in/go-playground/validator.v8 v8.18.2
+gopkg.in/go-playground/validator.v8
+# gopkg.in/yaml.v2 v2.2.1
+gopkg.in/yaml.v2
