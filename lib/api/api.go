@@ -2,7 +2,13 @@ package api // import "gochat/lib/api"
 
 import "github.com/gin-gonic/gin"
 
-func Register(r gin.IRouter) {
+func Register(r *gin.Engine) {
+	r.NoRoute(NotFoundHandler())
+
+	r.Use(gin.Logger())
+	r.Use(gin.Recovery())
+	r.Use(ErrorsMiddleware())
+
 	v1 := r.Group("/api/v1")
 
 	authGroup := v1.Group("/auth")
@@ -12,9 +18,9 @@ func Register(r gin.IRouter) {
 		authGroup.POST("/logout", LogoutHandler())
 	}
 
-	userGroup := v1.Group("/profile")
+	profileGroup := v1.Group("/profile")
 	{
-		userGroup.POST("/edit", ProfileEditHandler())
+		profileGroup.POST("/edit", ProfileEditHandler())
 	}
 
 	messagesGroup := v1.Group("/messages")
