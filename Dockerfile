@@ -1,16 +1,13 @@
-FROM golang:1.10 as builder
+FROM golang:1.10
 
-RUN go get -u -v golang.org/x/vgo
+RUN go get github.com/constabulary/gb/...
 
-RUN mkdir /app
 WORKDIR /app
 
-ADD go.mod go.mod
-ADD go.sum go.sum
 ADD vendor vendor
-ADD cmd cmd
-ADD lib lib
+ADD src src
 
-RUN vgo build -tags=jsoniter -o server gochat/cmd/server
+RUN gb build -tags=jsoniter
+RUN cp bin/server-jsoniter server
 
 CMD ["./server"]
