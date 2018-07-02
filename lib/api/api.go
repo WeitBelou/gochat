@@ -7,19 +7,19 @@ func Register(r gin.IRouter) {
 
 	authGroup := v1.Group("/auth")
 	{
-		authGroup.POST("/register", func(ctx *gin.Context) { panic("not implemented") })
-		authGroup.POST("/login", func(ctx *gin.Context) { panic("not implemented") })
-		authGroup.POST("/logout", func(ctx *gin.Context) { panic("not implemented") })
+		authGroup.POST("/register", RegisterHandler())
+		authGroup.POST("/login", LoginHandler())
+		authGroup.POST("/logout", LogoutHandler())
 	}
 
 	userGroup := v1.Group("/profile")
 	{
-		userGroup.POST("/edit", func(ctx *gin.Context) { panic("not implemented") })
+		userGroup.POST("/edit", ProfileEditHandler())
 	}
 
 	messagesGroup := v1.Group("/messages")
 	{
-		messagesGroup.GET("", func(ctx *gin.Context) { panic("not implemented") })
-		messagesGroup.POST("", func(ctx *gin.Context) { panic("not implemented") })
+		messagesGroup.GET("", MessagesListHandler())
+		messagesGroup.POST("", MessagePostHandler())
 	}
 }
