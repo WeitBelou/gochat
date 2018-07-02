@@ -1,11 +1,22 @@
-package main
+package main // import "gochat/cmd/server"
 
 import (
+	"fmt"
+
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"
 )
 
 type config struct {
+	Server server
+}
+
+type server struct {
+	Port uint32
+}
+
+func (s server) addr() string {
+	return fmt.Sprintf(":%d", s.Port)
 }
 
 func parseConfig() (*config, error) {

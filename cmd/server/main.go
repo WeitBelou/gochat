@@ -1,8 +1,11 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
 	"log"
+
+	"gochat/lib/api"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
@@ -13,5 +16,7 @@ func main() {
 	log.Printf("config: %+v", cfg)
 
 	r := gin.New()
-	r.Run(":8080")
+	api.Register(r)
+
+	r.Run(cfg.Server.addr())
 }

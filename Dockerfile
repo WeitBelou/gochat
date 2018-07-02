@@ -7,9 +7,10 @@ WORKDIR /app
 
 ADD go.mod go.mod
 ADD go.sum go.sum
-ADD cmd cmd
 ADD vendor vendor
+ADD cmd cmd
+ADD lib lib
 
-RUN vgo build -tags=jsoniter -o server ./cmd/server
+RUN vgo build -tags=jsoniter -o server gochat/cmd/server
 
 CMD ["./server"]
