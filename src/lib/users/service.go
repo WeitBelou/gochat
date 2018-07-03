@@ -1,4 +1,4 @@
-package auth
+package users
 
 import (
 	"github.com/jinzhu/gorm"
@@ -19,6 +19,6 @@ type User struct {
 }
 
 type Service interface {
-	Register(login string, password string, nickname string) (token string, err error)
-	Login(login string, password string) (token string, err error)
+	Register(login string, password string, nickname string) (*User, error)
+	Login(login string, password string) (*User, error)
 }

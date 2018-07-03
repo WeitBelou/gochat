@@ -5,7 +5,8 @@ import (
 	"time"
 
 	"lib/api"
-	"lib/auth"
+	"lib/users"
+	"lib/tokens"
 
 	"github.com/gin-gonic/gin"
 )
@@ -22,13 +23,13 @@ func main() {
 
 	r := gin.New()
 
-	authService, err := auth.New(cfg.Auth)
+	authService, err := users.New(cfg.Auth)
 	if err != nil {
 		log.Panicf("failed to connect to create auth service")
 	}
-
 	api.Register(r, api.Services{
-		Auth: authService,
+		Auth:   authService,
+		Tokens: tokens.New(string(cfg.Auth.Secret)),
 	})
 
 	r.Run(cfg.Server.addr())

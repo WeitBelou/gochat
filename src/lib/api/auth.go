@@ -3,12 +3,13 @@ package api
 import (
 	"net/http"
 
-	"lib/auth"
+	"lib/tokens"
+	"lib/users"
 
 	"github.com/gin-gonic/gin"
 )
 
-func RegisterHandler(service auth.Service) gin.HandlerFunc {
+func RegisterHandler(usersService users.Service, tokenService tokens.Service) gin.HandlerFunc {
 	type request struct {
 		Login    string `json:"login" binding:"required"`
 		Password string `json:"password" binding:"required"`
@@ -30,8 +31,8 @@ func RegisterHandler(service auth.Service) gin.HandlerFunc {
 			req.Nickname = req.Login
 		}
 
-		token, err := service.Register(req.Login, req.Password, req.Nickname)
-		if err == auth.ErrUserExists {
+		user, err := usersService.Register(req.Login, req.Password, req.Nickname)
+		if err == users.ErrUserExists {
 			ctx.Error(validationErrorsList{
 				"login": validationError{
 					Error: "exists",
@@ -45,13 +46,19 @@ func RegisterHandler(service auth.Service) gin.HandlerFunc {
 			return
 		}
 
+		token, err := tokenService.GenerateToken(user.Login)
+		if err != nil {
+			ctx.Error(err)
+			return
+		}
+
 		ctx.JSON(http.StatusOK, response{
 			Token: token,
 		})
 	}
 }
 
-func LoginHandler(service auth.Service) gin.HandlerFunc {
+func LoginHandler(usersService users.Service, tokenService tokens.Service) gin.HandlerFunc {
 	type request struct {
 		Login    string `json:"login" binding:"required"`
 		Password string `json:"password" binding:"required"`
@@ -69,8 +76,8 @@ func LoginHandler(service auth.Service) gin.HandlerFunc {
 			return
 		}
 
-		token, err := service.Login(req.Login, req.Password)
-		if err == auth.ErrBadCredentials {
+		user, err := usersService.Login(req.Login, req.Password)
+		if err == users.ErrBadCredentials {
 			ctx.Error(validationErrorsList{
 				"login": validationError{
 					Error: "bad_credentials",
@@ -79,6 +86,12 @@ func LoginHandler(service auth.Service) gin.HandlerFunc {
 			})
 			return
 		}
+		if err != nil {
+			ctx.Error(err)
+			return
+		}
+
+		token, err := tokenService.GenerateToken(user.Login)
 		if err != nil {
 			ctx.Error(err)
 			return

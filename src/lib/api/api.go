@@ -1,14 +1,16 @@
 package api
 
 import (
-	"lib/auth"
+	"lib/tokens"
+	"lib/users"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 )
 
 type Services struct {
-	Auth auth.Service
+	Auth   users.Service
+	Tokens tokens.Service
 }
 
 func Register(r *gin.Engine, services Services) {
@@ -24,8 +26,8 @@ func Register(r *gin.Engine, services Services) {
 
 	authGroup := v1.Group("/auth")
 	{
-		authGroup.POST("/register", RegisterHandler(services.Auth))
-		authGroup.POST("/login", LoginHandler(services.Auth))
+		authGroup.POST("/register", RegisterHandler(services.Auth, services.Tokens))
+		authGroup.POST("/login", LoginHandler(services.Auth, services.Tokens))
 	}
 
 	profileGroup := v1.Group("/profile")

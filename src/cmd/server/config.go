@@ -3,7 +3,8 @@ package main
 import (
 	"fmt"
 
-	"lib/auth"
+	"lib/users"
+	"lib/tokens"
 
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"
@@ -11,7 +12,8 @@ import (
 
 type config struct {
 	Server server
-	Auth   auth.Config
+	Auth   users.Config
+	Tokens tokens.Config
 }
 
 type server struct {

@@ -1,9 +1,10 @@
 server:
   port: 8080
 auth:
-  secret: kdy28ek32m7eixkmidsadhcmkasalmhds
   db:
     host: users
     dbName: users
     user: postgres
     password: postgres
+tokens:
+  secret: kdy28ek32m7eixkmidsadhcmkasalmhds
