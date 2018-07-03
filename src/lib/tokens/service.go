@@ -1,13 +1,17 @@
 package tokens
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
+)
 
 type User struct {
-	Login string
+	jwt.StandardClaims
+	Nickname string `json:"nickname"`
 }
 
 type Service interface {
-	GenerateToken(login string) (string, error)
+	GenerateToken(login string, nickname string) (string, error)
 	CheckToken(token string) (*User, bool)
 }
 

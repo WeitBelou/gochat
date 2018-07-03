@@ -1,7 +1,7 @@
 package tokens
 
 import (
-		"time"
+	"time"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/pkg/errors"
@@ -17,11 +17,14 @@ func New(cfg Config) *JWT {
 	}
 }
 
-func (t *JWT) GenerateToken(login string) (string, error) {
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
-		Subject:   login,
-		IssuedAt:  time.Now().Unix(),
-		ExpiresAt: time.Now().Add(time.Hour * 2).Unix(),
+func (t *JWT) GenerateToken(login string, nickname string) (string, error) {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, User{
+		StandardClaims: jwt.StandardClaims{
+			Subject:   login,
+			IssuedAt:  time.Now().Unix(),
+			ExpiresAt: time.Now().Add(time.Hour * 2).Unix(),
+		},
+		Nickname: nickname,
 	})
 	tokenString, err := token.SignedString([]byte(t.secret))
 	if err != nil {
@@ -31,7 +34,7 @@ func (t *JWT) GenerateToken(login string) (string, error) {
 }
 
 func (t *JWT) CheckToken(token string) (*User, bool) {
-	parsedToken, err := jwt.ParseWithClaims(token, &jwt.StandardClaims{}, func(token *jwt.Token) (interface{}, error) {
+	parsedToken, err := jwt.ParseWithClaims(token, &User{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
@@ -40,10 +43,8 @@ func (t *JWT) CheckToken(token string) (*User, bool) {
 	if err != nil {
 		return &User{}, false
 	}
-	if claims, ok := parsedToken.Claims.(*jwt.StandardClaims); ok && parsedToken.Valid {
-		return &User{
-			Login: claims.Subject,
-		}, true
+	if claims, ok := parsedToken.Claims.(*User); ok && parsedToken.Valid {
+		return claims, true
 	}
 
 	return nil, false

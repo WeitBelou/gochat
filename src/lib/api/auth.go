@@ -31,7 +31,7 @@ func RegisterHandler(usersService users.Service, tokenService tokens.Service) gi
 			req.Nickname = req.Login
 		}
 
-		err = usersService.Create(req.Login, req.Password, req.Nickname)
+		u, err := usersService.Create(req.Login, req.Password, req.Nickname)
 		if err == users.ErrUserExists {
 			ctx.Error(validationErrorsList{
 				"login": validationError{
@@ -46,7 +46,7 @@ func RegisterHandler(usersService users.Service, tokenService tokens.Service) gi
 			return
 		}
 
-		token, err := tokenService.GenerateToken(req.Login)
+		token, err := tokenService.GenerateToken(u.Login, u.Nickname)
 		if err != nil {
 			ctx.Error(err)
 			return
@@ -76,7 +76,7 @@ func LoginHandler(usersService users.Service, tokenService tokens.Service) gin.H
 			return
 		}
 
-		err = usersService.CheckPassword(req.Login, req.Password)
+		u, err := usersService.CheckPassword(req.Login, req.Password)
 		if err == users.ErrUserNotExists {
 			ctx.Error(validationErrorsList{
 				"login": validationError{
@@ -91,7 +91,7 @@ func LoginHandler(usersService users.Service, tokenService tokens.Service) gin.H
 			return
 		}
 
-		token, err := tokenService.GenerateToken(req.Login)
+		token, err := tokenService.GenerateToken(u.Login, u.Nickname)
 		if err != nil {
 			ctx.Error(err)
 			return

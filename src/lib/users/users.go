@@ -29,58 +29,61 @@ func New(c Config) (*DB, error) {
 	}, nil
 }
 
-func (db *DB) Create(login string, password string, nickname string) error {
+func (db *DB) Create(login string, password string, nickname string) (*User, error) {
+	u := &User{
+		Login:        login,
+		Nickname:     nickname,
+		PasswordHash: getPasswordHash(password),
+	}
+
 	scope := db.conn.First(&User{Login: login})
 	if scope.RecordNotFound() {
-		db.conn.Create(&User{
-			Login:        login,
-			Nickname:     nickname,
-			PasswordHash: getPasswordHash(password),
-		})
+		db.conn.Create(u)
 		if err := db.conn.Error; err != nil {
-			return errors.Wrap(err, "failed to create user")
+			return nil, errors.Wrap(err, "failed to create user")
 		}
 	} else {
 		if err := scope.Error; err != nil {
-			return errors.Wrap(err, "failed to check if user exists")
+			return nil, errors.Wrap(err, "failed to check if user exists")
 		}
-		return ErrUserExists
+		return nil, ErrUserExists
 	}
 
-	return nil
+	return u, nil
 }
 
-func (db *DB) CheckPassword(login string, password string) (error) {
+func (db *DB) CheckPassword(login string, password string) (*User, error) {
 	u := &User{}
 
 	scope := db.conn.First(u, "login = ?", login)
 	if scope.RecordNotFound() {
-		return ErrUserNotExists
+		return nil, ErrUserNotExists
 	} else if err := scope.Error; err != nil {
-		return errors.Wrap(err, "failed to check if user exists")
+		return nil, errors.Wrap(err, "failed to check if user exists")
 	}
 
 	passwordOk := checkPasswordHash(u.PasswordHash, password)
 	if !passwordOk {
-		return ErrUserNotExists
+		return nil, ErrUserNotExists
 	}
 
-	return nil
+	return u, nil
 }
 
-func (db *DB) ChangeNickname(login string, nickname string) error {
-	scope := db.conn.First(&User{}, "login = ?", login)
+func (db *DB) ChangeNickname(login string, nickname string) (*User, error) {
+	u := &User{}
+	scope := db.conn.First(u, "login = ?", login)
 	if scope.RecordNotFound() {
-		return ErrUserNotExists
+		return nil, ErrUserNotExists
 	} else if err := scope.Error; err != nil {
-		return errors.Wrap(err, "failed to check if user exists")
+		return nil, errors.Wrap(err, "failed to check if user exists")
 	}
 
 	err := db.conn.Model(&User{}).Update("nickname", nickname).Error
 	if err != nil {
-		return errors.Wrap(err, "failed to update user")
+		return nil, errors.Wrap(err, "failed to update user")
 	}
-	return nil
+	return u, nil
 }
 
 func getPasswordHash(password string) string {

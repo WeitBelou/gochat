@@ -34,7 +34,7 @@ func Register(r *gin.Engine, services Services) {
 
 	profileGroup := v1.Group("/profile", AuthMiddleware(services.Tokens))
 	{
-		profileGroup.POST("/edit", ProfileEditHandler(services.Users))
+		profileGroup.POST("/edit", ProfileEditHandler(services.Users, services.Tokens))
 	}
 
 	messagesGroup := v1.Group("/messages", AuthMiddleware(services.Tokens))

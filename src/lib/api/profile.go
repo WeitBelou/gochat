@@ -10,9 +10,13 @@ import (
 	"github.com/pkg/errors"
 )
 
-func ProfileEditHandler(usersService users.Service) gin.HandlerFunc {
+func ProfileEditHandler(usersService users.Service, tokensService tokens.Service) gin.HandlerFunc {
 	type request struct {
 		Nickname string `json:"nickname" binding:"required"`
+	}
+
+	type response struct {
+		Token string `json:"token"`
 	}
 
 	return func(ctx *gin.Context) {
@@ -29,11 +33,20 @@ func ProfileEditHandler(usersService users.Service) gin.HandlerFunc {
 			return
 		}
 
-		err = usersService.ChangeNickname(user.Login, req.Nickname)
+		u, err := usersService.ChangeNickname(user.Subject, req.Nickname)
 		if err == users.ErrUserNotExists {
 			ctx.Error(errors.New("user not exists for auth required route"))
 			return
 		}
-		ctx.JSON(http.StatusOK, gin.H{})
+
+		token, err := tokensService.GenerateToken(u.Login, u.Nickname)
+		if err != nil {
+			ctx.Error(errors.New("failed to generate new token"))
+			return
+		}
+
+		ctx.JSON(http.StatusOK, response{
+			Token: token,
+		})
 	}
 }

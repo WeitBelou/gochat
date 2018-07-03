@@ -19,7 +19,7 @@ type User struct {
 }
 
 type Service interface {
-	Create(login string, password string, nickname string) error
-	ChangeNickname(login string, nickname string) error
-	CheckPassword(login string, password string) error
+	Create(login string, password string, nickname string) (*User, error)
+	ChangeNickname(login string, nickname string) (*User, error)
+	CheckPassword(login string, password string) (*User, error)
 }

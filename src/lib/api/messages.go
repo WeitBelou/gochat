@@ -50,8 +50,7 @@ func MessagePostHandler(service messages.Service) gin.HandlerFunc {
 			return
 		}
 
-		// TODO(i.kosolapov): Replace login with nickname
-		service.Post(user.Login, req.Text)
+		service.Post(user.Nickname, req.Text)
 
 		ctx.JSON(http.StatusOK, gin.H{})
 	}
