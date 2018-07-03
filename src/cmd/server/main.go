@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"lib/api"
+	"lib/messages"
 	"lib/tokens"
 	"lib/users"
 
@@ -28,8 +29,9 @@ func main() {
 		log.Panicf("failed to connect to create auth service")
 	}
 	api.Register(r, api.Services{
-		Users:  authService,
-		Tokens: tokens.New(cfg.Tokens),
+		Users:    authService,
+		Tokens:   tokens.New(cfg.Tokens),
+		Messages: messages.New(cfg.Messages),
 	})
 
 	r.Run(cfg.Server.addr())

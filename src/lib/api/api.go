@@ -1,6 +1,7 @@
 package api
 
 import (
+	"lib/messages"
 	"lib/tokens"
 	"lib/users"
 
@@ -9,8 +10,9 @@ import (
 )
 
 type Services struct {
-	Users  users.Service
-	Tokens tokens.Service
+	Users    users.Service
+	Tokens   tokens.Service
+	Messages messages.Service
 }
 
 func Register(r *gin.Engine, services Services) {
@@ -37,7 +39,7 @@ func Register(r *gin.Engine, services Services) {
 
 	messagesGroup := v1.Group("/messages", AuthMiddleware(services.Tokens))
 	{
-		messagesGroup.GET("", MessagesListHandler())
-		messagesGroup.POST("", MessagePostHandler())
+		messagesGroup.GET("", MessagesListHandler(services.Messages))
+		messagesGroup.POST("", MessagePostHandler(services.Messages))
 	}
 }

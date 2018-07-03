@@ -3,17 +3,19 @@ package main
 import (
 	"fmt"
 
-	"lib/users"
+	"lib/messages"
 	"lib/tokens"
+	"lib/users"
 
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"
 )
 
 type config struct {
-	Server server
-	Users  users.Config
-	Tokens tokens.Config
+	Server   server
+	Users    users.Config
+	Tokens   tokens.Config
+	Messages messages.Config
 }
 
 type server struct {

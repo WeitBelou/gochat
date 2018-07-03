@@ -8,3 +8,5 @@ users:
     password: postgres
 tokens:
   secret: kdy28ek32m7eixkmidsadhcmkasalmhds
+messages:
+  limit: 100
