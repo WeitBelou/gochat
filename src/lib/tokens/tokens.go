@@ -1,6 +1,8 @@
 package tokens
 
 import (
+	"math/rand"
+	"sync"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -8,13 +10,53 @@ import (
 )
 
 type JWT struct {
-	secret string
+	mu            sync.Mutex
+	oneTimeTokens map[string]*User
+
+	oneTimeTokensTTL time.Duration
+	secret           string
 }
 
-func New(cfg Config) *JWT {
-	return &JWT{
-		secret: string(cfg.Secret),
+func (t *JWT) CheckOneTimeToken(token string) (*User, bool) {
+	t.mu.Lock()
+	defer t.mu.Unlock()
+
+	u, ok := t.oneTimeTokens[token]
+	if ok {
+		delete(t.oneTimeTokens, token)
+		return u, true
 	}
+
+	return nil, false
+}
+
+func (t *JWT) GenerateOneTimeToken(login string, nickname string) string {
+	t.mu.Lock()
+	defer t.mu.Unlock()
+
+	const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+	tokenBytes := make([]byte, 10)
+	for i := range tokenBytes {
+		tokenBytes[i] = letterBytes[rand.Intn(len(letterBytes))]
+	}
+
+	token := string(tokenBytes)
+
+	t.oneTimeTokens[token] = &User{
+		StandardClaims: jwt.StandardClaims{
+			Subject: login,
+		},
+		Nickname: nickname,
+	}
+	go func() {
+		<-time.After(t.oneTimeTokensTTL)
+		t.mu.Lock()
+		delete(t.oneTimeTokens, token)
+		t.mu.Unlock()
+	}()
+
+	return token
 }
 
 func (t *JWT) GenerateToken(login string, nickname string) (string, error) {
@@ -48,4 +90,13 @@ func (t *JWT) CheckToken(token string) (*User, bool) {
 	}
 
 	return nil, false
+}
+
+func New(cfg Config) *JWT {
+	return &JWT{
+		oneTimeTokens: make(map[string]*User),
+
+		secret:           string(cfg.Secret),
+		oneTimeTokensTTL: cfg.OneTimeTokensTTL,
+	}
 }

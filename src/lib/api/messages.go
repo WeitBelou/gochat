@@ -1,12 +1,13 @@
 package api
 
 import (
+	"log"
 	"net/http"
 
 	"lib/messages"
 	"lib/tokens"
 
-	"github.com/gin-gonic/gin"
+		"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	"github.com/pkg/errors"
 )
@@ -61,17 +62,33 @@ func MessagePostHandler(service messages.Service) gin.HandlerFunc {
 	}
 }
 
-func MessageListWebsocketHandler(service messages.Service) gin.HandlerFunc {
+func MessageListWebsocketHandler(service messages.Service, tokensService tokens.Service) gin.HandlerFunc {
 	upgrader := websocket.Upgrader{
 		WriteBufferSize: 1024,
+		CheckOrigin: func(r *http.Request) bool {
+			return true
+		},
+	}
+
+	type request struct {
+		Token string `form:"token" binding:"required"`
 	}
 
 	return func(ctx *gin.Context) {
-		user, ok := tokens.GetUserFromContext(ctx)
+		req := &request{}
+
+		err := ctx.ShouldBindQuery(req)
+		if err != nil {
+			ctx.Error(err)
+			return
+		}
+
+		user, ok := tokensService.CheckOneTimeToken(req.Token)
 		if !ok {
 			ctx.Error(errors.New("failed to get user from context"))
 			return
 		}
+		log.Printf("user: %+v", user)
 
 		conn, err := upgrader.Upgrade(ctx.Writer, ctx.Request, nil)
 		if err != nil {

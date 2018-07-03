@@ -13,6 +13,8 @@ type User struct {
 type Service interface {
 	GenerateToken(login string, nickname string) (string, error)
 	CheckToken(token string) (*User, bool)
+	CheckOneTimeToken(token string) (*User, bool)
+	GenerateOneTimeToken(login string, nickname string) string
 }
 
 const userKey = "userKey"

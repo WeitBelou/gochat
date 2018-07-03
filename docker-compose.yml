@@ -9,13 +9,6 @@ services:
       - "./gochat.yml:/etc/gochat.yml:ro"
     depends_on:
       - users
-  client:
-    build:
-      context: client
-    ports:
-      - "80:80"
-    depends_on:
-      - api
   users:
     image: postgres
     environment:

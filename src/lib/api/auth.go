@@ -7,6 +7,7 @@ import (
 	"lib/users"
 
 	"github.com/gin-gonic/gin"
+	"github.com/pkg/errors"
 )
 
 func RegisterHandler(usersService users.Service, tokenService tokens.Service) gin.HandlerFunc {
@@ -99,6 +100,24 @@ func LoginHandler(usersService users.Service, tokenService tokens.Service) gin.H
 
 		ctx.JSON(http.StatusOK, response{
 			Token: token,
+		})
+	}
+}
+
+func WsAuthHandler(service tokens.Service) gin.HandlerFunc {
+	type response struct {
+		Token string `json:"token"`
+	}
+
+	return func(ctx *gin.Context) {
+		u, ok := tokens.GetUserFromContext(ctx)
+		if !ok {
+			ctx.Error(errors.New("failed to fetch user from context"))
+			return
+		}
+
+		ctx.JSON(http.StatusOK, response{
+			Token: service.GenerateOneTimeToken(u.Subject, u.Nickname),
 		})
 	}
 }

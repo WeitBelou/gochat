@@ -1,7 +1,12 @@
 package tokens
 
-import "lib/config"
+import (
+	"time"
+
+	"lib/config"
+)
 
 type Config struct {
-	Secret config.Secret
+	Secret           config.Secret
+	OneTimeTokensTTL time.Duration
 }

@@ -30,6 +30,7 @@ func Register(r *gin.Engine, services Services) {
 	{
 		authGroup.POST("/register", RegisterHandler(services.Users, services.Tokens))
 		authGroup.POST("/login", LoginHandler(services.Users, services.Tokens))
+		authGroup.GET("/ws", AuthMiddleware(services.Tokens), WsAuthHandler(services.Tokens))
 	}
 
 	profileGroup := v1.Group("/profile", AuthMiddleware(services.Tokens))
@@ -37,11 +38,11 @@ func Register(r *gin.Engine, services Services) {
 		profileGroup.POST("/edit", ProfileEditHandler(services.Users, services.Tokens))
 	}
 
-	messagesGroup := v1.Group("/messages", AuthMiddleware(services.Tokens))
+	messagesGroup := v1.Group("/messages")
 	{
-		messagesGroup.GET("", MessagesListHandler(services.Messages))
-		messagesGroup.POST("", MessagePostHandler(services.Messages))
+		messagesGroup.GET("", AuthMiddleware(services.Tokens), MessagesListHandler(services.Messages))
+		messagesGroup.POST("", AuthMiddleware(services.Tokens), MessagePostHandler(services.Messages))
 
-		messagesGroup.GET("/ws", MessageListWebsocketHandler(services.Messages))
+		messagesGroup.GET("/ws", MessageListWebsocketHandler(services.Messages, services.Tokens))
 	}
 }
