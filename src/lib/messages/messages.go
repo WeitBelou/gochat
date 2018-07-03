@@ -24,6 +24,9 @@ func (s *InMemStorage) AddWSClient(login string, conn *websocket.Conn) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
+	if _, exists := s.clients[login]; exists {
+		s.clients[login].Close()
+	}
 	s.clients[login] = conn
 }
 

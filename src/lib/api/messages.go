@@ -1,13 +1,12 @@
 package api
 
 import (
-	"log"
 	"net/http"
 
 	"lib/messages"
 	"lib/tokens"
 
-		"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	"github.com/pkg/errors"
 )
@@ -88,7 +87,6 @@ func MessageListWebsocketHandler(service messages.Service, tokensService tokens.
 			ctx.Error(errors.New("failed to get user from context"))
 			return
 		}
-		log.Printf("user: %+v", user)
 
 		conn, err := upgrader.Upgrade(ctx.Writer, ctx.Request, nil)
 		if err != nil {
