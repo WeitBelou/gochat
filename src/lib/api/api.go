@@ -9,7 +9,7 @@ import (
 )
 
 type Services struct {
-	Auth   users.Service
+	Users  users.Service
 	Tokens tokens.Service
 }
 
@@ -26,13 +26,13 @@ func Register(r *gin.Engine, services Services) {
 
 	authGroup := v1.Group("/auth")
 	{
-		authGroup.POST("/register", RegisterHandler(services.Auth, services.Tokens))
-		authGroup.POST("/login", LoginHandler(services.Auth, services.Tokens))
+		authGroup.POST("/register", RegisterHandler(services.Users, services.Tokens))
+		authGroup.POST("/login", LoginHandler(services.Users, services.Tokens))
 	}
 
 	profileGroup := v1.Group("/profile", AuthMiddleware(services.Tokens))
 	{
-		profileGroup.POST("/edit", ProfileEditHandler())
+		profileGroup.POST("/edit", ProfileEditHandler(services.Users))
 	}
 
 	messagesGroup := v1.Group("/messages", AuthMiddleware(services.Tokens))

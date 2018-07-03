@@ -6,8 +6,8 @@ import (
 )
 
 var (
-	ErrUserExists     = errors.New("user exists")
-	ErrBadCredentials = errors.New("bad credentials")
+	ErrUserExists    = errors.New("user exists")
+	ErrUserNotExists = errors.New("user not exists")
 )
 
 type User struct {
@@ -19,6 +19,7 @@ type User struct {
 }
 
 type Service interface {
-	Create(login string, password string, nickname string) (*User, error)
-	CheckPassword(login string, password string) (*User, error)
+	Create(login string, password string, nickname string) error
+	ChangeNickname(login string, nickname string) error
+	CheckPassword(login string, password string) error
 }

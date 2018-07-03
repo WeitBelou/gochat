@@ -28,7 +28,7 @@ func main() {
 		log.Panicf("failed to connect to create auth service")
 	}
 	api.Register(r, api.Services{
-		Auth:   authService,
+		Users:  authService,
 		Tokens: tokens.New(cfg.Tokens),
 	})
 
