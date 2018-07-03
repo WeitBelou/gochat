@@ -1,5 +1,5 @@
 package messages
 
 type Config struct {
-	Limit uint32
+	Limit int
 }

@@ -15,21 +15,15 @@ func MessagesListHandler(service messages.Service) gin.HandlerFunc {
 		Messages []messages.Message `json:"messages"`
 	}
 	return func(ctx *gin.Context) {
-		messagesList, err := service.List()
-		if err != nil {
-			ctx.Error(err)
-			return
-		}
-
 		ctx.JSON(http.StatusOK, response{
-			Messages: messagesList,
+			Messages: service.List(),
 		})
 	}
 }
 
 func MessagePostHandler(service messages.Service) gin.HandlerFunc {
 	type request struct {
-		Text string `json:"text" binding:"required,len(256)"`
+		Text string `json:"text" binding:"required"`
 	}
 
 	return func(ctx *gin.Context) {
@@ -40,6 +34,16 @@ func MessagePostHandler(service messages.Service) gin.HandlerFunc {
 			return
 		}
 
+		if len(req.Text) > 255 {
+			ctx.Error(validationErrorsList{
+				"text.length": validationError{
+					Error: "text too long (> 255)",
+					Value: len(req.Text),
+				},
+			})
+			return
+		}
+
 		user, ok := tokens.GetUserFromContext(ctx)
 		if !ok {
 			ctx.Error(errors.New("failed to fetch user from context"))
@@ -47,10 +51,7 @@ func MessagePostHandler(service messages.Service) gin.HandlerFunc {
 		}
 
 		// TODO(i.kosolapov): Replace login with nickname
-		err = service.Post(user.Login, req.Text)
-		if err != nil {
-			ctx.Error(errors.Wrap(err, "failed to post new message"))
-		}
+		service.Post(user.Login, req.Text)
 
 		ctx.JSON(http.StatusOK, gin.H{})
 	}

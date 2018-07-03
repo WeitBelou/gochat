@@ -9,6 +9,6 @@ type Message struct {
 }
 
 type Service interface {
-	Post(author string, text string) error
-	List() ([]Message, error)
+	Post(author string, text string)
+	List() []Message
 }
