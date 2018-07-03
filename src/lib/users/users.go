@@ -83,6 +83,8 @@ func (db *DB) ChangeNickname(login string, nickname string) (*User, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to update user")
 	}
+	u.Nickname = nickname
+
 	return u, nil
 }
 
