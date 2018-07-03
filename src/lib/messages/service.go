@@ -1,6 +1,10 @@
 package messages
 
-import "time"
+import (
+	"time"
+
+	"github.com/gorilla/websocket"
+)
 
 type Message struct {
 	Author    string    `json:"author"`
@@ -9,6 +13,8 @@ type Message struct {
 }
 
 type Service interface {
-	Post(author string, text string)
+	Post(author string, text string) error
 	List() []Message
+
+	AddWSClient(login string, conn *websocket.Conn)
 }

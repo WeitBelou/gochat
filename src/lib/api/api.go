@@ -41,5 +41,7 @@ func Register(r *gin.Engine, services Services) {
 	{
 		messagesGroup.GET("", MessagesListHandler(services.Messages))
 		messagesGroup.POST("", MessagePostHandler(services.Messages))
+
+		messagesGroup.GET("/ws", MessageListWebsocketHandler(services.Messages))
 	}
 }

@@ -4,10 +4,15 @@ import (
 	"sort"
 	"sync"
 	"time"
+
+	"github.com/gorilla/websocket"
+	"github.com/pkg/errors"
 )
 
 type InMemStorage struct {
 	mu sync.Mutex
+
+	clients map[string]*websocket.Conn
 
 	messages []Message
 
@@ -15,7 +20,14 @@ type InMemStorage struct {
 	curPos int
 }
 
-func (s *InMemStorage) Post(author string, text string) {
+func (s *InMemStorage) AddWSClient(login string, conn *websocket.Conn) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	s.clients[login] = conn
+}
+
+func (s *InMemStorage) Post(author string, text string) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -35,6 +47,15 @@ func (s *InMemStorage) Post(author string, text string) {
 		s.curPos -= s.limit
 		s.messages[s.curPos] = message
 	}
+
+	for login, c := range s.clients {
+		err := c.WriteJSON(message)
+		if err != nil {
+			return errors.Wrapf(err, "failed to write message to client: %s", login)
+		}
+	}
+
+	return nil
 }
 
 func (s *InMemStorage) List() []Message {
@@ -50,6 +71,7 @@ func (s *InMemStorage) List() []Message {
 
 func New(cfg Config) *InMemStorage {
 	return &InMemStorage{
+		clients:  make(map[string]*websocket.Conn),
 		messages: make([]Message, 0, cfg.Limit),
 		limit:    cfg.Limit,
 	}

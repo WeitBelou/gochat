@@ -7,6 +7,7 @@ import (
 	"lib/tokens"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gorilla/websocket"
 	"github.com/pkg/errors"
 )
 
@@ -50,8 +51,34 @@ func MessagePostHandler(service messages.Service) gin.HandlerFunc {
 			return
 		}
 
-		service.Post(user.Nickname, req.Text)
+		err = service.Post(user.Nickname, req.Text)
+		if err != nil {
+			ctx.Error(errors.Wrap(err, "failed to post message"))
+			return
+		}
 
 		ctx.JSON(http.StatusOK, gin.H{})
+	}
+}
+
+func MessageListWebsocketHandler(service messages.Service) gin.HandlerFunc {
+	upgrader := websocket.Upgrader{
+		WriteBufferSize: 1024,
+	}
+
+	return func(ctx *gin.Context) {
+		user, ok := tokens.GetUserFromContext(ctx)
+		if !ok {
+			ctx.Error(errors.New("failed to get user from context"))
+			return
+		}
+
+		conn, err := upgrader.Upgrade(ctx.Writer, ctx.Request, nil)
+		if err != nil {
+			ctx.Error(errors.Wrap(err, "failed to get ws connection"))
+			return
+		}
+
+		service.AddWSClient(user.Subject, conn)
 	}
 }
