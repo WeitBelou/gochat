@@ -29,7 +29,7 @@ func New(c Config) (*DB, error) {
 	}, nil
 }
 
-func (db *DB) Register(login string, password string, nickname string) (*User, error) {
+func (db *DB) Create(login string, password string, nickname string) (*User, error) {
 	u := &User{
 		Login:        login,
 		Nickname:     nickname,
@@ -52,7 +52,7 @@ func (db *DB) Register(login string, password string, nickname string) (*User, e
 	return u, nil
 }
 
-func (db *DB) Login(login string, password string) (*User, error) {
+func (db *DB) CheckPassword(login string, password string) (*User, error) {
 	u := &User{}
 
 	scope := db.conn.First(u, "login = ?", login)

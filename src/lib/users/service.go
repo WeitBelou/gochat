@@ -19,6 +19,6 @@ type User struct {
 }
 
 type Service interface {
-	Register(login string, password string, nickname string) (*User, error)
-	Login(login string, password string) (*User, error)
+	Create(login string, password string, nickname string) (*User, error)
+	CheckPassword(login string, password string) (*User, error)
 }

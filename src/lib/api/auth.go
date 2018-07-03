@@ -31,7 +31,7 @@ func RegisterHandler(usersService users.Service, tokenService tokens.Service) gi
 			req.Nickname = req.Login
 		}
 
-		user, err := usersService.Register(req.Login, req.Password, req.Nickname)
+		user, err := usersService.Create(req.Login, req.Password, req.Nickname)
 		if err == users.ErrUserExists {
 			ctx.Error(validationErrorsList{
 				"login": validationError{
@@ -76,7 +76,7 @@ func LoginHandler(usersService users.Service, tokenService tokens.Service) gin.H
 			return
 		}
 
-		user, err := usersService.Login(req.Login, req.Password)
+		user, err := usersService.CheckPassword(req.Login, req.Password)
 		if err == users.ErrBadCredentials {
 			ctx.Error(validationErrorsList{
 				"login": validationError{
