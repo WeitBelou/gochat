@@ -1,7 +1,7 @@
 package tokens
 
 import (
-	"time"
+		"time"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/pkg/errors"

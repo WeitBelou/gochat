@@ -1,6 +1,6 @@
 server:
   port: 8080
-auth:
+users:
   db:
     host: users
     dbName: users

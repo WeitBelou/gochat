@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"strings"
 
+	"lib/tokens"
+
 	"github.com/gin-gonic/gin"
 	"gopkg.in/go-playground/validator.v9"
 )
@@ -76,5 +78,24 @@ func ErrorMiddleware() gin.HandlerFunc {
 			}
 			ctx.JSON(http.StatusBadRequest, validation)
 		}
+	}
+}
+
+func AuthMiddleware(tokensService tokens.Service) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		authHeader := ctx.GetHeader("Authorization")
+		if !strings.HasPrefix(authHeader, "Bearer ") {
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+			return
+		}
+
+		user, ok := tokensService.CheckToken(strings.TrimPrefix(authHeader, "Bearer "))
+		if !ok {
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+			return
+		}
+		tokens.PutUserToContext(ctx, user)
+
+		ctx.Next()
 	}
 }

@@ -12,7 +12,7 @@ import (
 
 type config struct {
 	Server server
-	Auth   users.Config
+	Users  users.Config
 	Tokens tokens.Config
 }
 
